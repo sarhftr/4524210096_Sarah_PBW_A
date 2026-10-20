@@ -210,28 +210,28 @@ Bagian ini berisi dokumentasi hasil implementasi dan bukti pengerjaan tugas prak
 
 Menampilkan halaman panel admin setelah berhasil login.
 
-![Login Admin](screenshots/adminpanel.png)
+![Login Admin](screenshoot/adminpanel.png)
 
 ### B. Daftar Buku
 
 Menampilkan daftar buku yang tersedia di dalam aplikasi.
 
-![Daftar Buku](screenshots/listbook.png)
+![Daftar Buku](screenshoot/listbook.png)
 
 ### C. Form Tambah Buku
 
 Menampilkan form untuk menambahkan data buku baru.
 
-![Form Tambah Buku](screenshots/createbook.png)
+![Form Tambah Buku](screenshoot/createbook.png)
 
 ### D. Hasil Pencarian
 
 Menampilkan hasil pencarian buku berdasarkan kata kunci.
 
-![Hasil Pencarian](screenshots/search.png)
+![Hasil Pencarian](screenshoot/search.png)
 
 ### E. Active Filter
 
 Menampilkan penerapan filter pada daftar buku.
 
-![Active Filter](screenshots/filter.png)
+![Active Filter](screenshoot/filter.png)
