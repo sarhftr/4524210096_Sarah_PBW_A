@@ -27,6 +27,7 @@ class ViewBook extends ViewRecord
                 Infolists\Components\Section::make('Book Details')
                     ->schema([
                         Infolists\Components\ImageEntry::make('cover')
+                            ->disk('public')
                             ->height(200)
                             ->defaultImageUrl(url('/images/default-book-cover.png')),
                         
@@ -37,10 +38,19 @@ class ViewBook extends ViewRecord
                         Infolists\Components\TextEntry::make('title')
                             ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
                             ->weight('bold'),
+
+                        Infolists\Components\TextEntry::make('description')
+                            ->label('Description')
+                            ->placeholder('No description available')
+                            ->columnSpanFull(),
                         
                         Infolists\Components\TextEntry::make('author.name')
                             ->label('Author'),
-                        
+                                                   
+                        Infolists\Components\TextEntry::make('categories.name')
+                            ->label('Categories')
+                            ->listWithLineBreaks(),
+
                         Infolists\Components\TextEntry::make('publisher'),
                         
                         Infolists\Components\TextEntry::make('year'),

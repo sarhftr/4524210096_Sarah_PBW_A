@@ -216,22 +216,22 @@ Menampilkan halaman panel admin setelah berhasil login.
 
 Menampilkan daftar buku yang tersedia di dalam aplikasi.
 
-![Daftar Buku](screenshoot/listbook.png)
+![Daftar Buku](screenshoot/listbook.jpeg)
 
 ### C. Form Tambah Buku
 
 Menampilkan form untuk menambahkan data buku baru.
 
-![Form Tambah Buku](screenshoot/createbook.png)
+![Form Tambah Buku](screenshoot/createbook.jpeg)
 
 ### D. Hasil Pencarian
 
 Menampilkan hasil pencarian buku berdasarkan kata kunci.
 
-![Hasil Pencarian](screenshoot/search.png)
+![Hasil Pencarian](screenshoot/search.jpeg)
 
 ### E. Active Filter
 
 Menampilkan penerapan filter pada daftar buku.
 
-![Active Filter](screenshoot/filter.png)
+![Active Filter](screenshoot/filter.jpeg)

@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class BookResource extends Resource
 {
@@ -29,11 +30,16 @@ class BookResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
-                        
+
                         Forms\Components\TextInput::make('title')
                             ->required()
                             ->maxLength(255),
-                        
+
+                        Forms\Components\Textarea::make('description')
+                            ->label('Description')
+                            ->rows(4)
+                            ->columnSpanFull(),
+
                         Forms\Components\Select::make('author_id')
                             ->relationship('author', 'name')
                             ->searchable()
@@ -44,16 +50,23 @@ class BookResource extends Resource
                                     ->required()
                                     ->maxLength(255),
                             ]),
-                        
+
+                        Forms\Components\Select::make('categories')
+                            ->label('Categories')
+                            ->relationship('categories', 'name')
+                            ->multiple()
+                            ->searchable()
+                            ->preload(),
+
                         Forms\Components\TextInput::make('publisher')
                             ->maxLength(255),
-                        
+
                         Forms\Components\TextInput::make('year')
                             ->numeric()
                             ->minValue(1000)
                             ->maxValue(date('Y'))
                             ->step(1),
-                        
+
                         Forms\Components\Select::make('status')
                             ->options([
                                 'available' => 'Available',
@@ -63,17 +76,25 @@ class BookResource extends Resource
                             ->default('available'),
                     ])
                     ->columns(2),
-                
+
                 Forms\Components\Section::make('Cover Image')
                     ->schema([
                         Forms\Components\FileUpload::make('cover')
+                            ->label('Cover')
                             ->image()
+                            ->disk('public')
                             ->directory('book-covers')
                             ->visibility('public')
                             ->imageEditor()
                             ->maxSize(2048)
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->helperText('Maximum file size: 2MB. Accepted formats: JPEG, PNG, WebP'),
+                            ->acceptedFileTypes([
+                                'image/jpeg',
+                                'image/png',
+                                'image/webp',
+                            ])
+                            ->helperText(
+                                'Maximum file size: 2MB. Accepted formats: JPEG, PNG, WebP'
+                            ),
                     ]),
             ]);
     }
@@ -83,32 +104,33 @@ class BookResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover')
+                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-book-cover.png')),
-                
+
                 Tables\Columns\TextColumn::make('isbn')
                     ->label('ISBN')
                     ->searchable()
                     ->sortable()
                     ->copyable(),
-                
+
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable()
                     ->limit(50),
-                
+
                 Tables\Columns\TextColumn::make('author.name')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('publisher')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                
+
                 Tables\Columns\TextColumn::make('year')
                     ->sortable()
                     ->alignCenter(),
-                
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
                         'success' => 'available',
@@ -118,7 +140,7 @@ class BookResource extends Resource
                         'heroicon-o-check-circle' => 'available',
                         'heroicon-o-clock' => 'borrowed',
                     ]),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -130,18 +152,20 @@ class BookResource extends Resource
                         'available' => 'Available',
                         'borrowed' => 'Borrowed',
                     ]),
-                
+
                 Tables\Filters\SelectFilter::make('year')
                     ->options(function () {
                         $currentYear = date('Y');
                         $years = [];
+
                         for ($year = $currentYear; $year >= 1950; $year--) {
                             $years[$year] = $year;
                         }
+
                         return $years;
                     })
                     ->searchable(),
-                
+
                 Tables\Filters\SelectFilter::make('author')
                     ->relationship('author', 'name')
                     ->searchable()
@@ -149,12 +173,23 @@ class BookResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (): bool =>
+                        in_array(Auth::user()?->role, ['admin', 'staff'])
+                    ),
+
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn (): bool =>
+                        Auth::user()?->role === 'admin'
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn (): bool =>
+                            Auth::user()?->role === 'admin'
+                        ),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

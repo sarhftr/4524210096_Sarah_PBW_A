@@ -16,6 +16,7 @@ class BookFactory extends Factory
             'publisher' => fake()->company(),
             'year' => fake()->numberBetween(1950, 2024),
             'status' => fake()->randomElement(['available', 'borrowed']),
+            'description' => fake()->paragraph(),
         ];
     }
 }
